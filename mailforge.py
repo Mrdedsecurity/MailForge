@@ -2,6 +2,7 @@
 
 import sys
 import argparse
+import re
 
 # =========================================
 #             M A I L F O R G E
@@ -25,53 +26,48 @@ def generate_emails_from_file(input_filename, output_filename, domain, verbose=F
     emails = []
     rejected = []
 
+    # Regex Pattern: Looks for two capitalized words (First Last) 
+    # and ensures they are followed by common delimiters or end of line.
+    name_pattern = re.compile(r'\b([A-Z][a-z]+)\s+([A-Z][a-z]+)\b')
+
     try:
         with open(input_filename, "r", encoding="utf-8") as file:
             for line in file:
-                original_name = line.strip()
+                original_line = line.strip()
                 
-                if not original_name:
-                    if verbose:
-                        rejected.append((original_name, "Empty line"))
+                if not original_line:
                     continue
 
-                # Clean name for processing
-                clean_name = original_name.lower()
-
-                if clean_name == "linkedin member":
+                # 1. Filter out known "trash" strings immediately
+                clean_check = original_line.lower()
+                trash_keywords = ["linkedin member", "anonymous user", "view profile", "connection"]
+                if any(k in clean_check for k in trash_keywords):
                     if verbose:
-                        rejected.append((original_name, "LinkedIn Member"))
+                        rejected.append((original_line, "Trash keyword detected"))
                     continue
 
-                if clean_name == "anonymous user":
+                # 2. Smart Extraction: Find the name within the line
+                # This works even if the line is "John Doe - Software Engineer"
+                match = name_pattern.search(original_line)
+
+                if match:
+                    first_name = match.group(1).lower()
+                    last_name = match.group(2).lower()
+                    
+                    # Optional: Add check for length
+                    if len(last_name) <= 1:
+                        if verbose:
+                            rejected.append((original_line, "Last name too short"))
+                        continue
+
+                    email = f"{first_name}.{last_name}@{domain}"
+                    
+                    # Prevent duplicates
+                    if email not in emails:
+                        emails.append(email)
+                else:
                     if verbose:
-                        rejected.append((original_name, "Anonymous user"))
-                    continue
-
-                parts = original_name.split()
-
-                if len(parts) < 2:
-                    if verbose:
-                        rejected.append((original_name, "Not a full name"))
-                    continue
-
-                first_name = parts[0]
-                last_name = parts[-1]
-
-                if len(last_name) <= 1:
-                    if verbose:
-                        rejected.append((original_name, "Last name too short"))
-                    continue
-
-                # isalpha() will fail on names like "O'Connor" or "Smith-Jones"
-                # If you want to allow those, you'd need a different check.
-                if not (first_name.isalpha() and last_name.isalpha()):
-                    if verbose:
-                        rejected.append((original_name, "Non-alphabetic characters in name"))
-                    continue
-
-                email = f"{first_name.lower()}.{last_name.lower()}@{domain}"
-                emails.append(email)
+                        rejected.append((original_line, "No name pattern found"))
 
         # Write the valid emails
         with open(output_filename, "w", encoding="utf-8") as out_file:
@@ -96,7 +92,6 @@ def generate_emails_from_file(input_filename, output_filename, domain, verbose=F
 if __name__ == "__main__":
     print_banner()
 
-    # -------- ARGUMENT PARSING --------
     parser = argparse.ArgumentParser(description="MailForge - Email Generator Tool")
     parser.add_argument("--input", required=True, help="Input file containing raw names")
     parser.add_argument("--output", default="full_list.txt", help="Output file for generated emails")
@@ -104,13 +99,11 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    # ---- USER INPUT FOR DOMAIN ----
     domain_input = input("Enter email domain (example: outlook.com): ").strip().lower()
     if not domain_input:
         print("Error: Domain cannot be empty.")
         sys.exit(1)
 
-    # ---- RUN TOOL ----
     emails, rejected = generate_emails_from_file(
         args.input,
         args.output,
@@ -118,9 +111,10 @@ if __name__ == "__main__":
         verbose=args.verbose
     )
 
-    print(f"\n✔ {len(emails)} email addresses forged and saved to '{args.output}'")
+    print(f"\n✔ {len(emails)} unique email addresses forged.")
+    print(f"✔ Results saved to '{args.output}'")
 
     if args.verbose:
-        print(f"⚠ {len(rejected)} entries rejected (see 'rejected_log.txt')")
+        print(f"⚠ {len(rejected)} entries filtered out (see 'rejected_log.txt')")
 
     print("🔥 MailForge execution complete.")
