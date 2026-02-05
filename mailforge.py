@@ -35,6 +35,11 @@ def generate_emails_from_file(input_filename, output_filename, domain, verbose=F
                         rejected.append((original_name, "Empty line"))
                     continue
 
+             if clean_name.lower() == "LinkedIn Member":
+                    if verbose:
+                        rejected.append((original_name, "LinkedIn Member"))
+                    continue
+
                 if clean_name.lower() == "anonymous user":
                     if verbose:
                         rejected.append((original_name, "Anonymous user"))
