@@ -120,6 +120,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    print("Example domains: google.com, outlook.com, tesla.com")
     domain_input = input("Enter email domain: ").strip().lower()
     if not domain_input:
         sys.exit("Error: Domain required.")
