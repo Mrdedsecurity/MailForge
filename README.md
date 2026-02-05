@@ -12,7 +12,7 @@
 - **Python 3.6** or higher
 - Basic command-line knowledge
 
-## 🚀 Quick Installation
+## 🚀 Guide
 
 ```bash
 # Clone the repository
@@ -23,3 +23,6 @@ cd MailForge
 python3 mailforge.py --input (rawfilehere)  (Will output file as "full_list.txt")
 python3 mailforge.py --input (rawfilehere) --output (outputfilehere)
 python3 mailforge.py --input (rawfilehere) -v (verbose mode set)
+
+## ⚠️ Warning
+This tool can create false postives, check all output for mistakes. 
