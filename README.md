@@ -18,9 +18,8 @@
 # Clone the repository
 git clone https://github.com/Mrdedsecurity/MailForge.git
 
-# Navigate to the project directory
+# How to use 
 cd MailForge
-💻 Usage
-Basic Usage
-bash
-python3 mailforge.py --input (rawfilehere)
+python3 mailforge.py --input (rawfilehere)  (Will output file as "full_list.txt")
+python3 mailforge.py --input (rawfilehere) --output (outputfilehere)
+python3 mailforge.py --input (rawfilehere) -v (verbose mode set)
