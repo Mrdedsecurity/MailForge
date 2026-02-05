@@ -1,5 +1,3 @@
-📧 MailForge 
-
 **MailForge** is a Python 3 utility that generates email addresses by parsing and processing name inputs. 
 ## ✨ Features
 
