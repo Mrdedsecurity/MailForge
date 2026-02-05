@@ -1,0 +1,26 @@
+# --- VALID NAMES IN MESSY DATA ---
+John Doe - Software Engineer at TechCorp
+Jane Smith (3rd degree connection)
+Alice Johnson | Project Manager | London
+   Bob Williams   
+
+# --- TRASH DATA (SHOULD BE FILTERED) ---
+LinkedIn Member
+Anonymous User
+View Profile
+1st degree connection
+--------------------------
+Click here to see more...
+
+# --- EDGE CASES ---
+Dr. Steven Strange
+O'Connor, Brian
+Sarah-Jane Smith
+J. Doe
+A
+123456789
+!@#$%^&*()
+
+# --- DUPLICATE TEST ---
+John Doe
+John Doe
