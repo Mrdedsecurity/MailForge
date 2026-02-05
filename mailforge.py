@@ -6,12 +6,6 @@ import re
 import csv
 from datetime import datetime
 
-# =========================================
-#             M A I L F O R G E
-#       Email Generator & Filter Tool
-#             Made by MrDedSec
-# =========================================
-
 def print_banner():
     print(r"""
  ___  ___  ___  _____ _      ______ ___________ _____  _____ 
